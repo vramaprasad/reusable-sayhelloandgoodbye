@@ -1,4 +1,4 @@
-name: SayHelloandGoodbye
+name: sayHelloandGoodbye
 on: workflow_call
 
 jobs:
