@@ -1,0 +1,50 @@
+name: Semantic Versioning
+on:
+  push:
+    branches:
+      - main
+  workflow_call:
+  
+jobs:
+  create-new-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetching Local Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Get revision name
+        id: get-name
+        uses: ./.github/actions/semantic-versioning
+        with:
+          # The prefix to use to identify tags
+          tag_prefix: "v"
+          # A string which, if present in a git commit, indicates that a change represents a
+          # major (breaking) change, supports regular expressions wrapped with '/'
+          major_pattern: "(MAJOR)"
+          # Same as above except indicating a minor change, supports regular expressions wrapped with '/'
+          minor_pattern: "(MINOR)"
+          # A string to determine the format of the version output
+          format: "${major}.${minor}.${patch}-prerelease${increment}"
+          # Named version, will be used as suffix for name version tag
+          # namespace: my-service
+          # If this is set to true, *every* commit will be treated as a new version.
+          bump_each_commit: false
+          # If true, the body of commits will also be searched for major/minor patterns to determine the version type.
+          search_commit_body: false
+          # The output method used to generate list of users, 'csv' or 'json'.
+          user_format_type: "csv"
+
+      - name: Create revision
+        uses: ./.github/actions/release-action
+        with:
+          token: ${{ github.token }}
+          name: ${{ steps.get-name.outputs.version_tag }}
+          commit: ${{ github.sha }}
+          tag: ${{ steps.get-name.outputs.version_tag }}
+          
+        
+          
+        
+        
+        
