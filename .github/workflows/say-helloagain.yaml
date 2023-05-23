@@ -1,0 +1,14 @@
+name: SayHelloagain
+on: workflow_call
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Print SayHelloaagain!
+      run: echo "SayHelloagain"
+      
