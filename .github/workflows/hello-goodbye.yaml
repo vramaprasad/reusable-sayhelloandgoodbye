@@ -1,14 +1,38 @@
-name: sayHelloandGoodbye
-on: workflow_call
+name: Say Hello and Goodbye
+on: 
+  workflow_call:
+    inputs:
+      name:
+        description: 'Name to say hello to'
+        required: false
+        type: string
+        default: Mayo
+
+    secrets:
+      secretname:
+        required: true
+    
+    outputs:
+      name:
+        description: "Name was that was used to say hello"
+        value: ${{ jobs.sayHello.outputs.name }}
+
 
 jobs:
-  build:
+  sayHello:
     runs-on: ubuntu-latest
-
+    outputs:
+      name: ${{ steps.say-hello.outputs.name }}
+    name: Say Hello
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Say Hello
+        id: say-hello
+        run: |
+          echo Hello ${{ inputs.name }}
+          echo "name=${{ inputs.name }}" >> $GITHUB_OUTPUT
 
-    - name: Print SayHelloandGoodbye!
-      run: echo "SayHelloandGoodbye"
       
